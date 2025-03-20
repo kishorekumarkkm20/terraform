@@ -1,35 +1,33 @@
 steps:
   # Step 1: Build the Docker image with the commit hash as the tag
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:$SHORT_SHA', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/thinking-leaf-454010-i2/my-model-repo/hello-world:$SHORT_SHA', '.']
     env:
-      - 'PROJECT_ID=corded-bivouac-446605-j2'
+      - 'PROJECT_ID=thinking-leaf-454010-i2'
       - 'LOCATION=us-central1'
 
   # Step 2: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:$SHORT_SHA']
+    args: ['push', 'us-central1-docker.pkg.dev/thinking-leaf-454010-i2/my-model-repo/hello-world:$SHORT_SHA']
 
-  # Step 3: Authenticate with GKE and deploy to Kubernetes
+  # Step 3: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:latest'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Print the short commit SHA to debug and confirm it's being passed correctly
-        echo "Building with commit hash: $SHORT_SHA"
-        
-        # Replace the image tag in deployment.yaml with the latest image
-        # (Make sure the file name is correct: deployment.yaml, not .deployment.yaml)
-        sed -i "s|image: us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:.*|image: us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:$SHORT_SHA|g" deployment.yaml
+        echo "Deploying commit hash: $SHORT_SHA to Cloud Run"
 
-        # Authenticate with GKE and configure Docker credentials
-        gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project static-dock-422507-v0
+        # Enable Artifact Registry authentication for Cloud Run
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-        # Apply the updated Kubernetes configuration
-        kubectl apply -f deployment.yaml
-        kubectl apply -f service.yaml
+        # Deploy the service to Cloud Run
+        gcloud run deploy hello-world-service \
+          --image=us-central1-docker.pkg.dev/thinking-leaf-454010-i2/my-model-repo/hello-world:$SHORT_SHA \
+          --region=us-central1 \
+          --platform=managed \
+          --allow-unauthenticated \
+          --project=thinking-leaf-454010-i2
 
 options:
   logging: CLOUD_LOGGING_ONLY
