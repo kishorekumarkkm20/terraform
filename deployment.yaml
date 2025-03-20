@@ -1,0 +1,25 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: node-hello-world
+  name: node-hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-hello-world
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: node-hello-world
+    spec:
+      containers:
+      - image: us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:$SHORT_SHA     
+        name: node-hello-world
+        resources: {}
+status: {}
