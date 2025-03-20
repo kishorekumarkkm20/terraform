@@ -19,7 +19,7 @@ spec:
         app: node-hello-world
     spec:
       containers:
-      - image: us-central1-docker.pkg.dev/static-dock-422507-v0/my-model-repo/hello-world:$SHORT_SHA     
+      - image: us-central1-docker.pkg.dev/thinking-leaf-454010-i2/my-model-repo/hello-world:$SHORT_SHA     
         name: node-hello-world
         resources: {}
 status: {}
