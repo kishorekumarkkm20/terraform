@@ -23,7 +23,7 @@ def hello_world():
     """
     A simple route that returns a static 'Hello World!' message.
     """
-    return "Hello team welcome to Enhub.ai Happy Holi"
+    return "Hello team welcome to Enhub.ai Happy Holli"
 
 if __name__ == "__main__":
     """
